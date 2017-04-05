@@ -1,7 +1,6 @@
 import tensorflow as tf
 import collections
 import time
-from datetime import datetime
 import math
 
 
@@ -58,7 +57,7 @@ def resnet_arg_scope(is_training=True, weight_decay=0.0001,
         'is_training': is_training,
         'decay': batch_norm_decay,
         'epsilon': batch_norm_epsilon,
-        'scale': batch_norm_scale
+        'scale': batch_norm_scale,
         'updates_collections': tf.GraphKeys.UPDATE_OPS,
     }
 
@@ -131,7 +130,7 @@ def resnet_v2_50(inputs, num_classes=None, global_pool=True,
         Block('block1', bottleneck, [(256, 64, 1)] * 2 + [(256, 64, 2)],
               Block('block2', bottleneck, [(512, 128, 1)] * 3 + [(512, 128, 2)]),
               Block('block3', bottleneck, [(1024, 256, 1)] * 5 + [(1024, 256, 2)]),
-              Block('block4', bottleneck, [(2048, 512, 1)] * 3)]
+              Block('block4', bottleneck, [(2048, 512, 1)] * 3))]
     return resnet_v2(inputs, blocks, num_classes, global_pool,
                      include_root_block=True, reuse=reuse, scope=scope)
 
@@ -193,15 +192,15 @@ def time_tensorflow_run(session, target, info_string):
         duration = time.time() - start_time
         if i >= num_step_burn_in:
             if not i % 10:
-                print('%s: step %d, duration = %.3f' %
-                      (datatime.now(), i - num_step_burn_in, duration))
+                print('step %d, duration = %.3f' %
+                      (i - num_step_burn_in, duration))
             total_duration += duration
             total_duration_squared += duration * duration
 
     mn = total_duration / num_batches
     vr = total_duration_squared / num_batches - mn * mn
     sd = math.sqrt(vr)
-    print('%s: %s across %d step, %.3f +/- %.3f sec / batch' %
-          (datatime.now(), info_string, num_batches, mn, sd))
+    print('%s across %d step, %.3f +/- %.3f sec / batch' %
+          ( info_string, num_batches, mn, sd))
 
 time_tensorflow_run(sess, net, "Forward")
