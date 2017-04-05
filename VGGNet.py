@@ -8,7 +8,7 @@ from datetime import datetime
 
 # tf.Variable(tensor, trianable, name)
 def conv_op(input_op, name, kh, kw, n_in, n_out):
-    n_in = input_op.get_shape()[-1].value  # 获得输入的通道数
+    n_in = input_op.get_shape()[-1].value  #
 
     with tf.name_scope(name) as scope:
         kernel = tf.get_variable(scope + "w", shape=[kh, kw, n_in, n_out], dtype=tf.float32,
