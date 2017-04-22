@@ -46,3 +46,12 @@ class Autoencoder(object):
         if hidden is None:
             hidden = np.random.normal(size=self.weights["b1"])
         return self.sess.run(self.reconstruction,feed_dict={self.hidden:hidden})
+
+    def reconstruct(self,X):
+        return self.sess.run(self.reconstruction,feed_dict={self.x:X,self.scale:self.training_scale})
+
+    def getWeight(self):
+        return self.sess.run(self.weights['w1'])
+
+    def getBiases(self):
+        return self.sess.run(self.weights['b1'])
