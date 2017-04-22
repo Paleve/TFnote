@@ -41,3 +41,8 @@ class Autoencoder(object):
 
     def transform(self,X):
         return self.sess.run(self.hidden,feed_dict={self.x:X,self.scale:self.training_scale})
+
+    def generate(self,hidden =None):
+        if hidden is None:
+            hidden = np.random.normal(size=self.weights["b1"])
+        return self.sess.run(self.reconstruction,feed_dict={self.hidden:hidden})

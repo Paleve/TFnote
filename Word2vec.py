@@ -137,6 +137,3 @@ with tf.Session(graph=graph) as session:
         if step % 2000 == 0:
             print ("Average loss at step",step,": ",average_loss)
             average_loss = 0
-
-
-
