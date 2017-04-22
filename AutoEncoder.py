@@ -13,7 +13,7 @@ class Autoencoder(object):
                  optimizer= tf.train.AdamOptimizer(),scale = 0.1):
         self.n_input = n_input
         self.n_hidden = n_hidden
-        self.tranfer_function = transfer_function
+        self.tranfer = transfer_function
         self.scale = tf.placeholder(tf.float32)
         self.training_scale = scale
         network_weights = self._initialize_weights()
@@ -70,7 +70,7 @@ def get_random_block_from_data(data,batch_size):
 
 X_train,X_test = standar_scale(mnist.train.images,mnist.test.images)
 
-n_samples = int(mnist.train.num_example)
+n_samples = int(mnist.train.num_examples)
 train_epochs = 20
 batch_size = 128
 display_step = 1
@@ -84,3 +84,7 @@ for epoch in range(train_epochs):
     for i in range(total_batch):
         batch_xs = get_random_block_from_data(X_train,batch_size)
         cost = autoencoder.partial_fit(batch_size)
+        avg_cost += cost/n_samples*batch_size
+
+    if epoch % display_step == 0:
+        print ("Epoch:",'%04d'%(epoch+1),"cost=","{:.9f".format(avg_cost))
