@@ -1,7 +1,7 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 mnist = input_data.read_data_sets("MNIST_data/",one_hot=True)
-sess = tf.InteractiveSession
+sess = tf.Session()
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape,stddev=0.1)
@@ -35,7 +35,7 @@ h_pool2 = max_pool_2x2(h_conv2)
 W_fc1 = weight_variable([7*7*64,1024])
 b_fc1 = biases_variable([1024])
 h_pool2_flat = tf.reshape(h_pool2,[-1,7*7*64])
-h_fc1 = tf.nn.relu(tf.matmul(h_pool2,W_fc1)+b_fc1)
+h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat,W_fc1)+b_fc1)
 
 keep_prob = tf.placeholder(tf.float32)
 h_fc1_drop = tf.nn.dropout(h_fc1,keep_prob)
@@ -48,3 +48,15 @@ cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_*tf.log(y_conv),reduction_indice
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
 correct_prediction = tf.equal(tf.arg_max(y_conv,1),tf.arg_max(y_,1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction,tf.float32))
+
+sess.run(tf.global_variables_initializer())
+# tf.global_variables_initializer().run()
+for i in range(20000):
+    batch = mnist.train.next_batch(50)
+    if i % 100 ==0:
+        train_accuracy = sess.run(accuracy,feed_dict={x:batch[0],y_:batch[1],keep_prob:1.0})
+        print("step %d,training accuracy %g"%(i,train_accuracy))
+
+print ("test accuracy %g"%accuracy.eval(feed_dic={x:mnist.test.images,y_:mnist.test.labels,
+                                                  keep_prob:1.0}))
